@@ -2,19 +2,19 @@ import React from "react";
 import { Product } from "../models/Product";
 import { Button } from "react-bootstrap";
 
-interface BasketProps {
+interface CheckoutPageProps {
   basket: Product[];
   onClearBasket: () => void;
 }
 
-const Basket: React.FC<BasketProps> = ({ basket, onClearBasket }) => {
+const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket, onClearBasket }) => {
   const total = basket.reduce((sum, product) => sum + product.price, 0);
 
   return (
-    <div className="my-4">
-      <h3>Your Basket</h3>
+    <div className="container my-4">
+      <h2>Checkout</h2>
       <div className="table-responsive">
-        <table className="table table-bordered table-hover">
+        <table className="table table-bordered">
           <thead>
             <tr>
               <th>Name</th>
@@ -32,14 +32,14 @@ const Basket: React.FC<BasketProps> = ({ basket, onClearBasket }) => {
         </table>
       </div>
       <p className="font-weight-bold">Total: ${total}</p>
-      <Button variant="danger" onClick={onClearBasket} className="mr-2">
-        Clear Basket
+      <Button variant="success" onClick={() => alert("Payment Successful!")} className="mr-2">
+        Confirm Payment
       </Button>
-      <Button variant="success" onClick={() => alert("Payment Complete!")}>
-        Finish Payment
+      <Button variant="secondary" onClick={onClearBasket}>
+        Clear Basket
       </Button>
     </div>
   );
 };
 
-export default Basket;
+export default CheckoutPage;
