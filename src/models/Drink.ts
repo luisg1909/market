@@ -1,8 +1,7 @@
 import { Product } from "../models/Product";
 
-
-export class Coffee extends Product {
+export class Drink extends Product {
   getCategory(): string {
-    return "Coffee";
+    return "Drink";
   }
 }

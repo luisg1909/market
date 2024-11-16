@@ -11,8 +11,7 @@ export abstract class Product {
       this.price = price;
     }
   
-    getCategory(): string {
-        return "General"; // default category or modify as needed
-      }
+    abstract getCategory(): string;
+
   }
   

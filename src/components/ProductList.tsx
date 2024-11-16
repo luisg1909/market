@@ -1,57 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import { Product } from "../models/Product";
-import { Button } from "react-bootstrap";
-import { FaCoffee, FaAppleAlt, FaCheese, FaGulp } from "react-icons/fa"; // Icons for products
+import { Tab, Nav, Table, Button } from "react-bootstrap";
 
 interface ProductListProps {
   products: Product[];
   onAddToBasket: (product: Product) => void;
 }
 
-const getProductIcon = (type: string) => {
-  switch (type) {
-    case "coffee":
-      return <FaCoffee />;
-    case "apple":
-      return <FaAppleAlt />;
-    case "milk":
-      return <FaCheese />;
-    case "soda":
-      return <FaGulp />;
-    default:
-      return null;
-  }
-};
-
 const ProductList: React.FC<ProductListProps> = ({ products, onAddToBasket }) => {
+  const categories = ["Coffee", "Cheese", "Milk", "Fruit", "Drink", "Candy"];
+  const [activeCategory, setActiveCategory] = useState("Coffee");
+
+  const filteredProducts = products.filter(
+    (product) => product.getCategory() === activeCategory
+  );
+
   return (
-    <div className="table-responsive my-4">
-      <table className="table table-striped table-hover">
-        <thead className="thead-dark">
-          <tr>
-            <th>Icon</th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Price</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
-              <td>{getProductIcon(product.getCategory().toLowerCase())}</td>
-              <td>{product.name}</td>
-              <td>{product.description}</td>
-              <td>${product.price}</td>
-              <td>
-                <Button variant="primary" onClick={() => onAddToBasket(product)}>
-                  Add to Basket
-                </Button>
-              </td>
-            </tr>
+    <div className="my-4">
+      <Tab.Container activeKey={activeCategory} onSelect={(k) => setActiveCategory(k || "Coffee")}>
+        <Nav variant="tabs" className="justify-content-center">
+          {categories.map((category) => (
+            <Nav.Item key={category}>
+              <Nav.Link eventKey={category}>{category}</Nav.Link>
+            </Nav.Item>
           ))}
-        </tbody>
-      </table>
+        </Nav>
+        <Tab.Content>
+          <Tab.Pane eventKey={activeCategory}>
+            <Table striped bordered hover className="mt-3">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Price</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredProducts.map((product) => (
+                  <tr key={product.id}>
+                    <td>{product.name}</td>
+                    <td>{product.description}</td>
+                    <td>${product.price}</td>
+                    <td>
+                      <Button variant="primary" onClick={() => onAddToBasket(product)}>
+                        Add to Basket
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Tab.Pane>
+        </Tab.Content>
+      </Tab.Container>
     </div>
   );
 };

@@ -1,15 +1,25 @@
 import React from "react";
+import { FaShoppingBasket } from "react-icons/fa";
+import { Navbar as BootstrapNavbar, Nav, Badge } from "react-bootstrap";
 
 interface NavbarProps {
-  basketCount: number;
+  totalAmount: number;
+  onBasketClick: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ basketCount }) => {
+const Navbar: React.FC<NavbarProps> = ({ totalAmount, onBasketClick }) => {
   return (
-    <nav className="navbar navbar-light bg-light">
-      <span className="navbar-brand mb-0 h1">Market App</span>
-      <span className="badge badge-pill badge-secondary">{basketCount}</span>
-    </nav>
+    <BootstrapNavbar bg="light" expand="lg">
+      <BootstrapNavbar.Brand href="/">Market App</BootstrapNavbar.Brand>
+      <Nav className="ml-auto">
+        <Nav.Link onClick={onBasketClick}>
+          <FaShoppingBasket size={20} />
+          <Badge bg="secondary" className="ml-1">
+            ${totalAmount.toFixed(2)}
+          </Badge>
+        </Nav.Link>
+      </Nav>
+    </BootstrapNavbar>
   );
 };
 
