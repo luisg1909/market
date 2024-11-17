@@ -1,8 +1,9 @@
 import React from "react";
 import { Button, Table } from "react-bootstrap";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png"; // Add a logo image to your project
+import "jspdf-autotable";
 
 interface CheckoutPageProps {
   basket: {
@@ -11,25 +12,36 @@ interface CheckoutPageProps {
     description: string;
     price: number;
   }[];
+  onClearBasket: () => void; 
 }
 
-const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket }) => {
+const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket, onClearBasket }) => {
+  const navigate = useNavigate();
+
   const totalAmount = basket.reduce((sum, product) => sum + product.price, 0);
 
-  const handleGeneratePDF = () => {
+  const handleFinishPayment = () => {
     const doc = new jsPDF();
 
-    // Add logo
-    doc.addImage(logo, "PNG", 10, 10, 30, 30);
+    // Get PDF width
+    const pageWidth = doc.internal.pageSize.getWidth();
 
-    // Add title and address
+    // Adjust image position to top-right corner
+    const imageWidth = 30; // Set the image width
+    const imageHeight = 30; // Set the image height
+    const xPosition = pageWidth - imageWidth - 10; // 10mm margin from the right edge
+    const yPosition = 10; // 10mm from the top edge
+
+    doc.addImage(logo, "PNG", xPosition, yPosition, imageWidth, imageHeight);
+
+    // Add title and header
     doc.setFontSize(18);
-    doc.text("Market Receipt", 70, 20);
+    doc.text("Market Receipt", 10, 20); // Keep text on the left
     doc.setFontSize(12);
-    doc.text("Miami, Florida", 70, 30);
-    doc.text(new Date().toLocaleDateString(), 70, 40);
+    doc.text("Miami, Florida", 10, 30);
+    doc.text(new Date().toLocaleDateString(), 10, 40);
 
-    // Add table with products
+    // Add table content
     const tableData = basket.map((product) => [
       product.name,
       product.description,
@@ -42,18 +54,23 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket }) => {
     });
 
     // Add total
-    const finalY = (doc as any).lastAutoTable.finalY || 50; // Get the last position of the table
-    doc.setFontSize(14);
-    doc.text(`Total: $${totalAmount.toFixed(2)}`, 14, finalY + 10);
+    const finalY = (doc as any).lastAutoTable.finalY || 50;
+    doc.text(`Total: $${totalAmount.toFixed(2)}`, 10, finalY + 10);
 
-    // Save the PDF
-    doc.save("market_receipt.pdf");
+    // Generate the PDF as a Blob
+    const pdfBlob = doc.output("blob");
+
+    // Create an object URL for the PDF
+    const pdfURL = URL.createObjectURL(pdfBlob);
+    onClearBasket()
+    // Navigate to the PDF viewer page with the URL as state
+    navigate("/pdf-viewer", { state: { pdfURL } });
   };
 
   return (
     <div className="container my-4">
       <h2>Checkout</h2>
-      <Table striped bordered hover className="mt-3">
+      <Table striped bordered hover>
         <thead>
           <tr>
             <th>Name</th>
@@ -72,9 +89,19 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket }) => {
         </tbody>
       </Table>
       <p className="font-weight-bold">Total to Pay: ${totalAmount.toFixed(2)}</p>
-      <Button variant="success" onClick={handleGeneratePDF}>
-        Finish Payment
-      </Button>
+      <div className="d-flex justify-content-start">
+        <Button variant="success" className="me-2" onClick={handleFinishPayment}>
+          Finish Payment
+        </Button>
+        <Button variant="primary" className="me-2" onClick={onClearBasket}>
+          Clear Basket
+        </Button>
+        <Button variant="danger" className="me-2" onClick={() => navigate("/")}>
+        Keep buying
+        </Button>
+
+
+      </div>
     </div>
   );
 };

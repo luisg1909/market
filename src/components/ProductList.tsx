@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { Tab, Nav, Table, Button, Form } from "react-bootstrap";
 import { Product } from "../models/Product";
+import { useNavigate } from "react-router-dom";
 
 interface ProductListProps {
   products: Product[];
   role: string; // User role: "regular" or "admin"
+  basket: Product[];
   onAddToBasket: (product: Product) => void;
   onEditProduct: (product: Product) => void; // Callback for editing products
+ 
+
 }
 
 const ProductList: React.FC<ProductListProps> = ({
   products,
   role,
+  basket,
   onAddToBasket,
   onEditProduct,
 }) => {
@@ -45,8 +50,11 @@ const ProductList: React.FC<ProductListProps> = ({
       onEditProduct(updatedProductInstance as Product);
     }
   };
-  const FinishPayment = () => {
-  }
+  const navigate = useNavigate();
+
+  const handleFinishPayment = () => {
+    navigate("/checkout", { state: { products } }); // Redirect to checkout page with the basket data
+  };
   return (
     <div className="my-4">
       <Tab.Container activeKey={activeCategory} onSelect={(k) => setActiveCategory(k || "Coffee")}>
@@ -122,9 +130,13 @@ const ProductList: React.FC<ProductListProps> = ({
                 ))}
               </tbody>
             </Table>
-            <Button variant="success" onClick={FinishPayment}>
-        Finish Payment
-      </Button>
+            {basket.length > 0 && (
+        <div className="d-flex justify-content-end mt-3">
+          <Button variant="success" onClick={handleFinishPayment}>
+            Finish Payment
+          </Button>
+        </div>
+      )}
           </Tab.Pane>
         </Tab.Content>
       </Tab.Container>
