@@ -4,12 +4,13 @@ import CheckoutPage from "./components/CheckoutPage";
 import Navbar from "./components/Navbar";
 import { productsData } from "./data/productData";
 import { Product } from "./models/Product";
+import LoginPage from "./components/LoginPage";
 
 const App: React.FC = () => {
   const [products, setProducts] = useState<Product[]>(productsData);
   const [basket, setBasket] = useState<Product[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [role, setRole] = useState<string>("regular"); // User role: "regular" or "admin"
+  const [role, setRole] = useState<string | null>(null); // Tracks user role: "regular" or "admin"
 
   const addToBasket = (product: Product) => {
     setBasket([...basket, product]);
@@ -26,24 +27,41 @@ const App: React.FC = () => {
       )
     );
   };
+  // Handle Login
+  const handleLogin = (role: string) => {
+    setRole(role);
+  };
 
+  // Logout
+  const handleLogout = () => {
+    setRole(null);
+  };
   const totalAmount = basket.reduce((sum, product) => sum + product.price, 0);
 
   return (
     <div className="container my-4">
-      <Navbar
-        totalAmount={totalAmount}
-        onBasketClick={() => setShowCheckout(true)}
-      />
-      {showCheckout ? (
+      {role ? (
+        <>
+          <Navbar
+            totalAmount={basket.reduce((sum, product) => sum + product.price, 0)}
+            onBasketClick={() => setShowCheckout(true)}
+            onLogout={handleLogout}
+            role={role}
+          />
+          {showCheckout ? (
         <CheckoutPage basket={basket} />
+      )  : (
+            <ProductList
+              products={products}
+              role={role}
+              onAddToBasket={addToBasket}
+              onEditProduct={handleEditProduct}
+            />
+          )}
+        </>
       ) : (
-        <ProductList
-          products={products}
-          role={role} // Pass user role
-          onAddToBasket={addToBasket}
-          onEditProduct={handleEditProduct} // Pass edit function for admins
-        />
+        <LoginPage onLogin={handleLogin} />
+
       )}
     </div>
   );

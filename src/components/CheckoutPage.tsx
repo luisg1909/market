@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Table } from "react-bootstrap";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
-import logo from "./logo.png";
+import logo from "../assets/logo.png"; // Add a logo image to your project
 
 interface CheckoutPageProps {
   basket: {
@@ -72,7 +72,9 @@ const CheckoutPage: React.FC<CheckoutPageProps> = ({ basket }) => {
         </tbody>
       </Table>
       <p className="font-weight-bold">Total to Pay: ${totalAmount.toFixed(2)}</p>
-
+      <Button variant="success" onClick={handleGeneratePDF}>
+        Finish Payment
+      </Button>
     </div>
   );
 };
