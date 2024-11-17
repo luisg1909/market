@@ -1,16 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ProductList from "./components/ProductList";
-import Navbar from "./components/Navbar";
 import CheckoutPage from "./components/CheckoutPage";
-import { Product } from "./models/Product";
+import Navbar from "./components/Navbar";
 import { productsData } from "./data/productData";
+import { Product } from "./models/Product";
 
 const App: React.FC = () => {
-  const [products] = useState<Product[]>(productsData);
+  const [products, setProducts] = useState<Product[]>(productsData);
   const [basket, setBasket] = useState<Product[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
-
-  const totalAmount = basket.reduce((sum, product) => sum + product.price, 0);
+  const [role, setRole] = useState<string>("regular"); // User role: "regular" or "admin"
 
   const addToBasket = (product: Product) => {
     setBasket([...basket, product]);
@@ -20,17 +19,31 @@ const App: React.FC = () => {
     setBasket([]);
   };
 
-  const handleBasketClick = () => {
-    setShowCheckout(true);
+  const handleEditProduct = (updatedProduct: Product) => {
+    setProducts((prevProducts) =>
+      prevProducts.map((product) =>
+        product.id === updatedProduct.id ? updatedProduct : product
+      )
+    );
   };
+
+  const totalAmount = basket.reduce((sum, product) => sum + product.price, 0);
 
   return (
     <div className="container my-4">
-      <Navbar totalAmount={totalAmount} onBasketClick={handleBasketClick} />
+      <Navbar
+        totalAmount={totalAmount}
+        onBasketClick={() => setShowCheckout(true)}
+      />
       {showCheckout ? (
-        <CheckoutPage basket={basket} onClearBasket={clearBasket} />
+        <CheckoutPage basket={basket} />
       ) : (
-        <ProductList products={products} onAddToBasket={addToBasket} />
+        <ProductList
+          products={products}
+          role={role} // Pass user role
+          onAddToBasket={addToBasket}
+          onEditProduct={handleEditProduct} // Pass edit function for admins
+        />
       )}
     </div>
   );

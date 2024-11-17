@@ -10,7 +10,7 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ totalAmount, onBasketClick }) => {
   return (
     <BootstrapNavbar bg="light" expand="lg">
-      <BootstrapNavbar.Brand href="/">Market App</BootstrapNavbar.Brand>
+      <BootstrapNavbar.Brand href="#">Market App</BootstrapNavbar.Brand>
       <Nav className="ml-auto">
         <Nav.Link onClick={onBasketClick}>
           <FaShoppingBasket size={20} />
