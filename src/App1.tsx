@@ -42,9 +42,9 @@ const App: React.FC = () => {
   };
 
   const totalAmount = basket.reduce((sum, product) => sum + product.price, 0);
-
+  //  <Router basename="/testmarketdemo">
   return (
-    <Router>
+    <Router >
       <div className="container my-4">
         {role ? (
           <>

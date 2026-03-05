@@ -36,7 +36,7 @@ const Basket: React.FC<BasketProps> = ({ basket, onClearBasket }) => {
         Clear Basket
       </Button>
       <Button variant="success" onClick={() => alert("Payment Complete!")}>
-        Finish Payment
+        Finish Payment 
       </Button>
     </div>
   );

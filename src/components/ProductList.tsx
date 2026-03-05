@@ -70,6 +70,7 @@ const ProductList: React.FC<ProductListProps> = ({
             <Table striped bordered hover className="mt-3">
               <thead>
                 <tr>
+                  <th>Image</th>
                   <th>Name</th>
                   <th>Description</th>
                   <th>Price</th>
@@ -79,6 +80,14 @@ const ProductList: React.FC<ProductListProps> = ({
               <tbody>
                 {filteredProducts.map((product) => (
                   <tr key={product.id}>
+                   <td>
+                      <img 
+                        src={product.base64Image} 
+                        alt={product.name} 
+                        style={{ width: '50px', height: '50px', objectFit: 'cover' }} 
+                      />
+                    </td>
+
                     {role === "admin" ? (
                       <>
                         <td>
@@ -111,6 +120,7 @@ const ProductList: React.FC<ProductListProps> = ({
                       </>
                     ) : (
                       <>
+                       
                         <td>{product.name}</td>
                         <td>{product.description}</td>
                         <td>${product.price.toFixed(2)}</td>
@@ -133,7 +143,7 @@ const ProductList: React.FC<ProductListProps> = ({
             {basket.length > 0 && (
         <div className="d-flex justify-content-end mt-3">
           <Button variant="success" onClick={handleFinishPayment}>
-            Finish Payment
+            Finish Payment 
           </Button>
         </div>
       )}

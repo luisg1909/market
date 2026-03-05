@@ -4,6 +4,6 @@ import React from "react";
 
 export class Candy extends Product {
   getCategory(): string {
-    return "Candy";
+      return "Candy";
   }
 }

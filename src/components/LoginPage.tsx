@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
+import logo from "../assets/logo.png"; 
 
 interface LoginPageProps {
   onLogin: (role: string) => void;
@@ -9,7 +10,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   return (
     <div className="text-center my-5">
  <img
-        src="/logo.png" 
+        src={logo} 
         alt="Market App Logo"
         className="mb-4"
         style={{ width: "150px" }}
