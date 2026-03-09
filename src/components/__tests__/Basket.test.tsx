@@ -14,7 +14,12 @@ describe('Basket Component', () => {
     // Check if total is $15
     expect(screen.getByText(/Total: \$15/i)).toBeInTheDocument();
   });
-
+  it('should calculate the total price correctly', () => {
+    render(<Basket basket={mockBasket} onClearBasket={() => {}} />);
+    
+    // Change 15 to 999. This will definitely fail.
+    expect(screen.getByText(/Total: \$999/i)).toBeInTheDocument(); 
+  });
   it('should call onClearBasket when the button is clicked', () => {
     const clearMock = vi.fn();
     render(<Basket basket={mockBasket} onClearBasket={clearMock} />);
