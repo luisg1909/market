@@ -1,0 +1,32 @@
+name: Market App CI
+
+# 1. Define when the pipeline runs
+on:
+  push:
+    branches: [ "developer", "main" ]
+  pull_request:
+    branches: [ "developer" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 2. Check out your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 3. Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # 4. Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 5. Run the tests (the most important part)
+      - name: Run unit tests
+        run: npm test -- --run
